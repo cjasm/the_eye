@@ -1,0 +1,14 @@
+version: "2"
+services:
+  theeeye:
+    restart: always
+    image: theeye:$THE_EYE_VERSION
+    container_name: theeye
+    environment:
+      - ALLOWED_HOSTS
+      - SECRET_KEY
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "$THE_EYE_PORT:8000"
