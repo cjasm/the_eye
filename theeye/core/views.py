@@ -27,3 +27,10 @@ class EventViewSet(viewsets.ViewSet):
 
         serializer = EventSerializer(queryset, many=True)
         return Response(serializer.data)
+
+    def create(self, request):
+        for data in request.data:
+            serializers = EventSerializer(data=data)
+            serializers.is_valid()
+            serializers.save()
+        return Response()
