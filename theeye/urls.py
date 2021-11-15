@@ -16,10 +16,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
-from theeye.core.views import EventViewSet
+from theeye.core.views import EventViewSet, ErrorViewSet
 
 router = routers.SimpleRouter()
 router.register(r'events', EventViewSet, basename='event')
+router.register(r'errors', ErrorViewSet, basename='error')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

@@ -1,5 +1,6 @@
 from rest_framework.test import APITestCase
-from theeye.core.models import Event
+from theeye.core.models import Event, Error
+from theeye.core.serializers import EventSerializer
 
 
 class EventGet(APITestCase):
@@ -178,8 +179,85 @@ class EventPostInvalid(APITestCase):
     def test_post(self):
         self.assertEqual(self.resp.status_code, 200)
 
-    def test_has_unsaved_events(self):
+    def test_has_saved_events(self):
         self.assertEqual(len(Event.objects.all()), 1)
 
     def test_has_errors(self):
-        self.assertEqual(len(self.resp.data['errors']), 3)
+        self.assertEqual(len(Error.objects.all()), 3)
+
+
+class ErrorGet(APITestCase):
+    def setUp(self):
+        data = {
+                "session_id": "e2085be5-9137-4e4e-80b5-f1ffddc25423",
+                "category": "page interaction",
+                "name": "cta click",
+                "data": {
+                    "path": "/",
+                    "element": "chat bubble"
+                },
+                "timestamp": "2021-01-01 09:15:27.243860"
+            }
+        serializer = EventSerializer(data=data)
+        serializer.is_valid()
+        Error(message=serializer.errors, data=data).save()
+        self.resp = self.client.get('/api/errors/')
+
+    def test_get(self):
+        self.assertEqual(self.resp.status_code, 200)
+
+    def test_has_errors(self):
+        print(self.resp.data)
+        self.assertGreaterEqual(self.resp.data, 1)
+
+
+class ErrorPost(APITestCase):
+    def setUp(self):
+        self.data = [
+            {
+                "session_id": "e2085be5-9137-4e4e-80b5-f1ffddc25423",
+                "category": "page interaction",
+                "name": "pageview",
+                "data": {
+                    "host": "www.consumeraffairs.com",
+                    "path": "/",
+                },
+                "timestamp": "2021-01-01 09:15:27.243860"
+            },
+            {
+                "session_id": "e2085be5-9137-4e4e-80b5-f1ffddc25423",
+                "category": "page interaction",
+                "name": "pageview",
+                "data": {
+                },
+                "timestamp": "2021-01-01 09:15:27.243860"
+            },
+            {
+                "session_id": "e2085be5-9137-4e4e-80b5-f1ffddc25423",
+                "category": "page interaction",
+                "name": "cta click",
+                "data": {
+                    "path": "/",
+                    "element": "chat bubble"
+                },
+                "timestamp": "2021-01-01 09:15:27.243860"
+            },
+            {
+                "session_id": "e2085be5-9137-4e4e-80b5-f1ffddc25423",
+                "category": "form interaction",
+                "name": "submit",
+                "data": {
+                    "host": "www.consumeraffairs.com",
+                    "path": "/",
+                    "form": {
+                        "first_name": "John",
+                        "last_name": "Doe"
+                    }
+                },
+                "timestamp": "2021-12-12 09:15:27.243860"
+            }
+        ]
+        self.resp = self.client.post('/api/errors/', self.data, format='json')
+
+    def test_post(self):
+        self.assertEqual(self.resp.status_code, 405)

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from theeye.core.models import Event
+from theeye.core.models import Event, Error
 from django.utils import timezone
 
 class EventSerializer(serializers.ModelSerializer):
@@ -25,3 +25,8 @@ class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         exclude = ['created_at']
+
+
+class ErrorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Error
