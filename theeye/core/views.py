@@ -1,5 +1,6 @@
 from django.utils.dateparse import parse_datetime
 from rest_framework import viewsets
+from rest_framework.serializers import ValidationError
 from rest_framework.response import Response
 from theeye.core.models import Event
 from theeye.core.serializers import EventSerializer
@@ -29,8 +30,12 @@ class EventViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
     def create(self, request):
+        errors = []
         for data in request.data:
-            serializers = EventSerializer(data=data)
-            serializers.is_valid()
-            serializers.save()
-        return Response()
+            serializer = EventSerializer(data=data)
+            if serializer.is_valid():
+                serializer.save()
+            else:
+                errors.append(serializer.errors)
+
+        return Response({'errors': errors})
