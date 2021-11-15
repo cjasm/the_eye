@@ -34,7 +34,7 @@ class EventViewSet(viewsets.ViewSet):
             if serializer.is_valid():
                 serializer.save()
             else:
-                Error(message=serializer.errors, data=data).save()
+                Error(message=serializer.errors['data'][0], data=data).save()
 
         return Response()
 

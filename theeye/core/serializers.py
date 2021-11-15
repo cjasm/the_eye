@@ -30,3 +30,4 @@ class EventSerializer(serializers.ModelSerializer):
 class ErrorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Error
+        fields = '__all__'
