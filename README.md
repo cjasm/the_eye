@@ -1,5 +1,67 @@
 # The Eye
+This is a microservice for collecting events from other apps. This is a project for Consumer Affairs job application.
 
+## Requirements
+* Docker
+* Docker-compose
+* Python 3.8
+
+## Production Environment Setup
+1. Clone the git repository
+2. create an environment file named ```.env.docker```
+3. edit the ```.env.docker``` values
+4. run the docker-compose
+
+```
+# clone the repository
+git clone https://github.com/cjasm/the_eye.git
+
+# create an environment file
+cp .env-sample .env.docker
+
+# edit the environment values
+nano .env.docker
+
+# run the docker-compose
+docker-compose up
+```
+
+## Locally Environment Setup
+
+1. Clone the git repository
+2. if you do not have a redis and celery installed
+   1. create an environment file named ```.env.docker```
+   2. edit the ```.env.docker``` values
+   3. run the redis, celery and db
+3. run the tests
+4. run the server
+
+```
+# clone the repository
+git clone https://github.com/cjasm/the_eye.git
+
+# [Optional] Create an environment file
+cp .env-sample .env.docker
+# edit the environment values
+nano .env.docker
+# Run the redis, celery and db
+docker-compose up -d db redis celery
+
+# create a locally environment file
+cp .env-sample .env
+
+# edit the locally environment values
+nano .env
+
+# run the tests
+python manage.py test
+
+# run the server
+python manage.py runserver
+```
+
+
+# Code Challenge
 ## Story
 
 You work in an organization that has multiple applications serving websites, but it's super hard to analyze user behavior in those, because you have no data.
