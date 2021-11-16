@@ -1,14 +1,41 @@
 version: "2"
 services:
-  theeeye:
+  db:
+    image: postgres
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+  redis:
+    image: "redis:alpine"
+  theeye:
     restart: always
     image: theeye:$THE_EYE_VERSION
     container_name: theeye
     environment:
       - ALLOWED_HOSTS
       - SECRET_KEY
+      - DATABASE_URL
+      - CELERY_BROKER_URL
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - "$THE_EYE_PORT:8000"
+    depends_on:
+      - db
+      - redis
+  celery-worker:
+    image: theeye:$THE_EYE_VERSION
+    command: celery -A theeye worker -l info
+    environment:
+      - ALLOWED_HOSTS
+      - SECRET_KEY
+      - DATABASE_URL
+      - CELERY_BROKER_URL
+    depends_on:
+      - db
+      - redis
+      - theeye
