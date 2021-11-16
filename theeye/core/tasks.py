@@ -10,5 +10,8 @@ def event_handler(payload):
         if serializer.is_valid():
             serializer.save()
         else:
-            error_msg = serializer.errors['data'][0]
+            if 'data' in serializer.errors:
+                error_msg = serializer.errors['data'][0]
+            else:
+                error_msg = serializer.errors['timestamp'][0]
             Error(message=error_msg, data=data).save()
