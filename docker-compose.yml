@@ -22,6 +22,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    volumes:
+      - ./staticfiles:/the_eye/staticfiles
     ports:
       - "$THE_EYE_PORT:8000"
     depends_on:
@@ -39,3 +41,13 @@ services:
       - db
       - redis
       - theeye
+  nginx:
+    restart: always
+    image: nginx:latest
+    volumes:
+      - ./contrib/nginx:/etc/nginx/conf.d
+      - ./staticfiles:/theeye/staticfiles/
+    depends_on:
+      - theeye
+    ports:
+      - "8080:8080"

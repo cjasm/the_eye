@@ -15,8 +15,22 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework import routers
+from rest_framework import routers, permissions
 from theeye.core.views import EventViewSet, ErrorViewSet
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+
+schema_view = get_schema_view(
+   openapi.Info(
+      title="The Eye API",
+      default_version='v1',
+      terms_of_service="https://www.google.com/policies/terms/",
+      contact=openapi.Contact(email="cjasm@cin.ufpe.br"),
+      license=openapi.License(name="BSD License"),
+   ),
+   public=True,
+   permission_classes=(permissions.AllowAny,),
+)
 
 router = routers.SimpleRouter()
 router.register(r'events', EventViewSet, basename='event')
@@ -24,5 +38,6 @@ router.register(r'errors', ErrorViewSet, basename='error')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include(router.urls))
+    path('api/', include(router.urls)),
+    path('', schema_view.with_ui('swagger', cache_timeout=0), name='docs'),
 ]
