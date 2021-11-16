@@ -4,12 +4,14 @@ services:
     image: postgres
     volumes:
       - ./data/db:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_DB
-      - POSTGRES_USER
-      - POSTGRES_PASSWORD
+    env_file:
+      - ./.env.docker
+    ports:
+      - "5432:5432"
   redis:
     image: "redis:alpine"
+    ports:
+      - "6379:6379"
   theeye:
     restart: always
     image: theeye:$THE_EYE_VERSION
@@ -27,6 +29,8 @@ services:
     depends_on:
       - db
       - redis
+    env_file:
+      - ./.env.docker
   celery-worker:
     image: theeye:$THE_EYE_VERSION
     command: celery -A theeye worker -l info
@@ -38,7 +42,8 @@ services:
     depends_on:
       - db
       - redis
-      - theeye
+    env_file:
+      - ./.env.docker
   nginx:
     restart: always
     image: nginx:latest
