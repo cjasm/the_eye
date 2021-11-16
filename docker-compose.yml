@@ -24,8 +24,6 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./staticfiles:/the_eye/staticfiles
-    ports:
-      - "$THE_EYE_PORT:8000"
     depends_on:
       - db
       - redis
@@ -50,4 +48,4 @@ services:
     depends_on:
       - theeye
     ports:
-      - "8080:8080"
+      - "$THE_EYE_PORT:8001"

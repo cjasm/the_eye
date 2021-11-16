@@ -9,7 +9,6 @@ RUN apk add --update alpine-sdk libxml2-dev libxslt-dev openssl-dev libffi-dev z
 # Adding The Eye Project
 COPY . /the_eye
 WORKDIR /the_eye
-RUN rm -rf static/
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
@@ -18,6 +17,6 @@ ENV ALLOWED_HOSTS ''
 ENV DATABASE_URL ''
 ENV CELERY_BROKER_URL ''
 
-CMD python manage.py collectstatic --noinput && \
+CMD python manage.py collectstatic --noinput --clear && \
     python manage.py migrate && \
     gunicorn theeye.wsgi -w3 -t 1000 -b 0.0.0.0:8000
