@@ -8,7 +8,7 @@ from theeye.core.tasks import event_handler
 
 class EventViewSet(viewsets.ViewSet):
     """
-    This Viewset should deal with Event list, creation, retrieve and update
+    This Viewset should deal with Event list and creation
     """
 
     def list(self, request):
@@ -30,8 +30,15 @@ class EventViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
     def create(self, request):
-        event_handler.delay(request.data)
-        return Response(status=status.HTTP_202_ACCEPTED)
+        """
+        Sends the creation responsability to the background task 'event_handler'
+        """
+        data = request.data
+        if not data or type(data) != list:
+            return Response(status=status.HTTP_400_BAD_REQUEST, data={'message': "the request data is invalid"})
+
+        task = event_handler.delay(data)
+        return Response(data={'task_id': task.id}, status=status.HTTP_202_ACCEPTED)
 
 
 class ErrorViewSet(viewsets.ReadOnlyModelViewSet):
