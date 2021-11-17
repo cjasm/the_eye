@@ -88,6 +88,19 @@ Response time percentiles (approximated)
  None     Aggregated                   17     21     26     31    220    360    450    480    530    560    560   7809
 ```
 
+
+## Conclusion
+
+This interesting project has contemplated common problems in many companies, such as creating endpoints and background jobs. The tool was built as simple as possible but complying with the use cases. The endpoints are documented by swagger and accessed through the main URL (e.g. http:localhost:8000). 
+
+Furthermore, one of the requirements was the request time, and the tool should not let the request hang. Assumed that the communication protocol should be HTTP, I have implemented the background job on Celery and Redis. The Redis was chosen as a broker because it transports small messages fastly. However, if the messages are too long, it could be interesting to separate them into one event per task.
+
+In addition, I considered that this application should be deployed on a private network since I have understood that it works as a middleware microservice. In this case, an allowed host proper configured on environment variables should work. However, if necessary, a Bearer or OAuth token can be implemented depending on the requirements.
+
+Furthermore, I have understood that performance is a critical constraint. Thus, I have created a load test script using the Locust tool to measure it. The simulation is shown above but can vary depending on some configurations. Also, the Docker could be improved by setting fixed resource configurations.
+
+Finally, I felt a lack of information about the error payload data and which is the proper validation. Then, I created a payload data validation based on 'host' and 'path' because of the example. Some tests cases were designed to validate the event and error creation during the beginning of the development, but they were removed after the implementation of the background task. Thus, more tests should be written to complement the existent ones.
+
 # Code Challenge
 ## Story
 
