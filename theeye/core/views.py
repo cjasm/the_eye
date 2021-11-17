@@ -6,7 +6,7 @@ from theeye.core.serializers import EventSerializer, ErrorSerializer
 from theeye.core.tasks import event_handler
 
 
-class EventViewSet(viewsets.ViewSet):
+class EventViewSet(viewsets.GenericViewSet):
     """
     This Viewset should deal with Event list and creation
     """
@@ -26,8 +26,9 @@ class EventViewSet(viewsets.ViewSet):
         if session_query:
             queryset = queryset.filter(session_id=session_query)
 
-        serializer = EventSerializer(queryset, many=True)
-        return Response(serializer.data)
+        page = self.paginate_queryset(queryset)
+        serializer = EventSerializer(page, many=True)
+        return self.get_paginated_response(serializer.data)
 
     def create(self, request):
         """
