@@ -60,6 +60,33 @@ python manage.py test
 python manage.py runserver
 ```
 
+## Load Testing
+
+```
+
+locust --headless --users 1000 --spawn-rate 100 -H http://localhost:8000 -t 1m -f contrib/load_test.py
+```
+
+### Locally Results
+These results can vary based on hardware, os and internet
+* CPU: Intel® Core™ i5-10300H CPU @ 2.50GHz × 8
+* Memory: 16 GB
+* GPU: NVIDIA Corporation / GeForce GTX 1650 Ti/PCIe/SSE2 (4GB GDDR6)
+* OS: Ubuntu 20.04.3 LTS
+```
+ Name                          # reqs      # fails  |     Avg     Min     Max  Median  |   req/s failures/s
+-----------------------------------------------------------------------------------------------------------
+ POST /api/events/               7809     0(0.00%)  |      59       8     557      17  |  130.55    0.00
+-----------------------------------------------------------------------------------------------------------
+ Aggregated                      7809     0(0.00%)  |      59       8     557      17  |  130.55    0.00
+
+Response time percentiles (approximated)
+ Type     Name                        50%    66%    75%    80%    90%    95%    98%    99%  99.9% 99.99%   100% # reqs
+--------|----------------------|---------|------|------|------|------|------|------|------|------|------|------|------|
+ POST     /api/events/                 17     21     26     31    220    360    450    480    530    560    560   7809
+--------|----------------------|---------|------|------|------|------|------|------|------|------|------|------|------|
+ None     Aggregated                   17     21     26     31    220    360    450    480    530    560    560   7809
+```
 
 # Code Challenge
 ## Story
